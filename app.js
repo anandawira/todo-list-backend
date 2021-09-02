@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const User = require('./models/user');
-const { isEmail } = require('validator');
+
+const authRouter = require('./routes/auth');
 
 // Connect Database
 require('./configs/database');
@@ -12,35 +12,12 @@ const app = express();
 // Parse urlencoded request body
 app.use(express.urlencoded({ extended: false }));
 
-app.post('/sign-up', (req, res) => {
-  // Check if email is valid
-  if (!isEmail(req.body.email)) {
-    return res.status(400).send('Invalid Email');
-  }
+app.use('/', authRouter);
 
-  // Hash user's password using bcrypt
-  bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-    // Check if hashing failed
-    if (err) {
-      return res.status(500).send('Password hashing failed');
-    }
-
-    // Create new User object from request body and hashed password
-    const user = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: hashedPassword,
-    }).save((err) => {
-      // Check if database query failed and put error message to response
-      if (err) {
-        return res.status(400).send(err.message);
-      }
-
-      // Send response 'Created' on success
-      return res.sendStatus(201);
-    });
-  });
+// error handler
+app.use(function (err, req, res, next) {
+  // render the error page
+  res.status(err.status || 500).json({ message: err.message });
 });
 
 // Get port from environtment variable or use 3000 on development
