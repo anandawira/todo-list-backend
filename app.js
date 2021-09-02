@@ -1,21 +1,10 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('./models/user');
 const { isEmail } = require('validator');
 
-// Import environtment variable expect when on production
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-
-// Database connection
-mongoose.connect(process.env.MONGO_DB, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'mongo connection error'));
+// Connect Database
+require('./configs/database');
 
 // Initialize Express Server
 const app = express();
