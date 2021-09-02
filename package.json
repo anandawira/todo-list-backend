@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "startDev": "nodemon app.js"
   },
   "keywords": [],
@@ -23,6 +24,6 @@
     "nodemon": "^2.0.12"
   },
   "engines": {
-    "node": "16.8.0"
+    "node": "16.x"
   }
 }
