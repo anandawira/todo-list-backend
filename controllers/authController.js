@@ -24,13 +24,13 @@ exports.user_create = [
     .trim()
     .isEmail()
     .withMessage('Email invalid')
+    .toLowerCase()
     .custom(async (value) => {
       const user = await User.findOne({ email: value });
       if (user) {
         return Promise.reject('Email already in use');
       }
-    })
-    .toLowerCase(),
+    }),
 
   body('password')
     .isLength({ min: 8 })
