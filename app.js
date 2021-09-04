@@ -6,6 +6,12 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const morgan = require('morgan');
 
+
+// Import environtment variable expect when on production
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 // Connect Database
 require('./configs/database');
 
