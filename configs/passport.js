@@ -28,18 +28,18 @@ module.exports = function (app) {
           if (!user) {
             return done(null, false, { message: 'Incorrect email' });
           }
+
           bcrypt.compare(password, user.password, (err, res) => {
             if (err) {
               return done(err);
             }
-
+            console.log('hahaha');
             if (res) {
               return done(null, user);
             } else {
               return done(null, false, { message: 'Incorrect password' });
             }
           });
-          return done(null, user);
         });
       },
     ),
