@@ -1,13 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-
+var cors = require('cors');
 const authRouter = require('./routes/auth');
 
 // Connect Database
 require('./configs/database');
 
-// Initialize Express Server
+// Initialize Express Server with CORS
 const app = express();
+app.use(cors());
 
 // Parse urlencoded request body
 app.use(express.urlencoded({ extended: false }));
