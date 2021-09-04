@@ -106,7 +106,12 @@ exports.user_refresh_token = (req, res, next) => {
       if (err) {
         return next();
       }
-      res.status(200).json({ id: userData.id, isAdmin: userData.isAdmin });
+      const accessToken = jwt.sign(
+        { id: userData.id, isAdmin: userData.isAdmin },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '1d' },
+      );
+      res.status(200).json({ access_token: accessToken });
     });
   });
 };
