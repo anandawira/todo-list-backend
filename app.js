@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
 var cors = require('cors');
 const authRouter = require('./routes/auth');
 
