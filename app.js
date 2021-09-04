@@ -1,6 +1,9 @@
 const express = require('express');
 var cors = require('cors');
 const authRouter = require('./routes/auth');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 // Connect Database
 require('./configs/database');
@@ -13,6 +16,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 // Routers
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', authRouter);
 
 // error handler

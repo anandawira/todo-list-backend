@@ -1,0 +1,71 @@
+openapi: 3.0.0
+
+info:
+  title: Glints-IPE-Group1-ToDoList
+  description: ToDoList mini project API
+  version: 1.0.0
+
+servers:
+  - url: https://glints1-todolist.herokuapp.com
+    description: Backend main server
+
+tags:
+  - name: Auth
+    description: User authentication and authorization
+paths:
+  /sign-up:
+    post:
+      summary: Register a new user to the server
+      description: ''
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - first_name
+                - last_name
+                - email
+                - password
+      responses:
+        '201':
+          description: User registered to the application successfully
+        '400': # status code
+          description: Bad Request. One of form data did NOT meet the requirement.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        msg:
+                          type: string
+                        param:
+                          type: string
+                        location:
+                          type: string
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
