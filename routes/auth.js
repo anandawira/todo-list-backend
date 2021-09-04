@@ -4,9 +4,6 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 const auth_controller = require('../controllers/authController');
 
-router.get('/', authenticateToken, (req, res) => {
-  res.sendStatus(200);
-});
 
 router.post('/sign-up', auth_controller.user_create);
 
