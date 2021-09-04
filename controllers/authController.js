@@ -25,8 +25,8 @@ exports.user_create = [
     .isEmail()
     .withMessage('Email invalid')
     .toLowerCase()
-    .custom(async (value) => {
-      const user = await User.findOne({ email: value });
+    .custom(async (email) => {
+      const user = await User.findOneByEmail(email);
       if (user) {
         return Promise.reject('Email already in use');
       }

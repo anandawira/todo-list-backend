@@ -12,6 +12,7 @@ const app = express();
 // Parse urlencoded request body
 app.use(express.urlencoded({ extended: false }));
 
+// Routers
 app.use('/', authRouter);
 
 // error handler
