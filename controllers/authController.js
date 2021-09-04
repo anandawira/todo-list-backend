@@ -2,6 +2,7 @@ const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 exports.user_create = [
   // Validate and sanitize fields.
@@ -71,11 +72,41 @@ exports.user_create = [
 ];
 
 exports.user_login = [
-  passport.authenticate('local'),
+  passport.authenticate('local', { session: false }),
   (req, res, next) => {
+    const refreshToken = jwt.sign(
+      { id: req.user.id },
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+
+    const accessToken = jwt.sign(
+      { id: req.user.id, isAdmin: req.user.isAdmin },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '1d' },
+    );
+
     return res.status(200).json({
+      id: req.user.id,
       first_name: req.user.first_name,
       last_name: req.user.last_name,
+      refresh_token: refreshToken,
+      access_token: accessToken,
     });
   },
 ];
+
+exports.user_refresh_token = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const refreshToken = authHeader && authHeader.split(' ')[1];
+
+  if (refreshToken === undefined) return res.sendStatus(401);
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: err.message });
+    User.findById(user.id, 'id isAdmin', (err, userData) => {
+      if (err) {
+        return next();
+      }
+      res.json({ id: userData.id, isAdmin: userData.isAdmin });
+    });
+  });
+};

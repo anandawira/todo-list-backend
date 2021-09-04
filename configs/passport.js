@@ -1,12 +1,9 @@
 const passport = require('passport');
-const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const LocalStrategy = require('passport-local').Strategy;
-const { header } = require('express-validator');
 
 module.exports = function (app) {
-  app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
   app.use(passport.initialize());
   app.use(passport.session());
 
