@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 exports.user_create = [
   // Validate and sanitize fields.
@@ -26,7 +27,7 @@ exports.user_create = [
     .withMessage('Email invalid')
     .toLowerCase()
     .custom(async (email) => {
-      const user = await User.findOneByEmail(email);
+      const user = await User.isEmailTaken(email);
       if (user) {
         return Promise.reject('Email already in use');
       }
@@ -39,7 +40,7 @@ exports.user_create = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     // Hash user's password using bcrypt
@@ -65,6 +66,16 @@ exports.user_create = [
         // Send response 'Created' on success
         return res.sendStatus(201);
       });
+    });
+  },
+];
+
+exports.user_login = [
+  passport.authenticate('local'),
+  (req, res, next) => {
+    return res.status(200).json({
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
     });
   },
 ];

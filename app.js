@@ -17,6 +17,9 @@ app.use(cors());
 // Parse urlencoded request body
 app.use(express.urlencoded({ extended: false }));
 
+// auth
+require('./configs/passport')(app);
+
 // Routers
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', authRouter);
