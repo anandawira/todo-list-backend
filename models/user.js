@@ -20,7 +20,7 @@ UserSchema.statics.findOneByEmail = function (email, callback) {
   });
 };
 
-UserSchema.statics.isEmailTaken = function (email) {
+UserSchema.statics.isEmailExist = function (email) {
   return this.findOne({ email: email });
 };
 
