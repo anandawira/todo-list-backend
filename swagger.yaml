@@ -72,9 +72,9 @@ paths:
                   message:
                     type: string
   /login:
-    post:
+    get:
       tags:
-      - Auth
+        - Auth
       summary: Login to the application with email and password
       description: ''
       requestBody:
@@ -114,7 +114,7 @@ paths:
   /access-token:
     get:
       tags:
-      - Auth
+        - Auth
       summary: Request new access token
       description: ''
       security:
@@ -138,12 +138,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    
-      
-      
+
 components:
   securitySchemes:
-    refreshBearer:            # arbitrary name for the security scheme
+    refreshBearer: # arbitrary name for the security scheme
       type: http
       scheme: bearer
       bearerFormat: JWT
