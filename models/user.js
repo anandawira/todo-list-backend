@@ -12,6 +12,7 @@ const UserSchema = new Schema({
   },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
+  activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
 });
 
 UserSchema.statics.findOneByEmail = function (email, callback) {
