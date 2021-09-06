@@ -14,7 +14,13 @@ const UserSchema = new Schema({
   isAdmin: { type: Boolean, default: false },
 });
 
-UserSchema.statics.findOneByEmail = function (email) {
+UserSchema.statics.findOneByEmail = function (email, callback) {
+  return this.findOne({ email: email }, (err, user) => {
+    callback(err, user);
+  });
+};
+
+UserSchema.statics.isEmailTaken = function (email) {
   return this.findOne({ email: email });
 };
 
