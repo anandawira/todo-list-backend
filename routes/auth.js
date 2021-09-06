@@ -8,7 +8,7 @@ router.post('/sign-up', auth_controller.user_create);
 
 router.post('/login', auth_controller.user_login);
 
-router.get('/access-token', auth_controller.user_refresh_token);
+router.post('/refresh-token', auth_controller.user_refresh_token);
 
 const forgotLimit = rateLimit({ windowMs: 1 * 60 * 60 * 1000, max: 5 });
 router.post(
