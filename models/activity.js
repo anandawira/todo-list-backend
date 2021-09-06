@@ -15,7 +15,7 @@ Activity.set('toJSON', {
     return {
       id: ret._id,
       title: ret.title,
-      description: ret.transform,
+      description: ret.description,
       hasImage: ret.hasImage,
       image_url: ret.image_url,
       isDone: ret.isDone,
