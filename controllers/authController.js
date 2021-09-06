@@ -3,7 +3,6 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const authenticateToken = require('../middlewares/authenticateToken');
 const nodemailer = require('nodemailer');
 
 exports.user_create = [
@@ -11,7 +10,6 @@ exports.user_create = [
   body('first_name')
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage('First name must be specified')
     .isAlpha()
     .withMessage('First name has non-alphabetical characters'),
@@ -19,7 +17,6 @@ exports.user_create = [
   body('last_name')
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage('Last name must be specified')
     .isAlpha()
     .withMessage('Last name has non-alphabetical characters'),
