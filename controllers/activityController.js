@@ -47,8 +47,16 @@ exports.activity_create = [
     });
   },
 ];
-exports.activity_list = (req, res, next) => {
-  res.send('GET');
+exports.activity_list = async(req, res, next) => {
+  User.findById(req.user.id, 'activities')
+    .populate('activities', 'title description hasImage isDone')
+    .exec((err, result) => {
+      if (err) {
+        return next(err);
+      }
+
+      return res.json(result.activities);
+    });
 };
 exports.activity_edit = (req, res, next) => {
   res.send('PUT');
