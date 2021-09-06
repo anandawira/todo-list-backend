@@ -12,6 +12,8 @@ servers:
 tags:
   - name: Auth
     description: User authentication and authorization
+  - name: Activity
+    description: Operations on activity object
 paths:
   /sign-up:
     post:
@@ -42,7 +44,7 @@ paths:
       responses:
         '201':
           description: User registered to the application successfully
-        '400': # status code
+        '400':
           description: Bad Request. One of form data did NOT meet the requirement.
           content:
             application/json:
@@ -118,7 +120,7 @@ paths:
       summary: Request new access token
       description: ''
       security:
-        - refreshBearer: []
+        - refresh_token: []
       responses:
         '200':
           description: New access token generated
@@ -228,10 +230,137 @@ paths:
                 properties:
                   message:
                     type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /activity:
+    get:
+      tags:
+      - Activity
+      summary: Get all activity of current user
+      description: ''
+      security:
+        - access_token: []
+      responses:
+        '200':
+          description: Operation success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    hasImage:
+                      type: boolean
+                    image_url:
+                      type: string
+                    isDone:
+                      type: boolean
+        '403':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      tags:
+      - Activity
+      summary: Save new activity to the database
+      description: ''
+      security:
+        - access_token: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - title
+                - description
+      responses:
+        '201':
+          description: Activity saved to the database
+          
+        '400':
+          description: Bad Request. One of form data did NOT meet the requirement.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        msg:
+                          type: string
+                        param:
+                          type: string
+                        location:
+                          type: string
+        '403':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    
+        
 
 components:
   securitySchemes:
-    refreshBearer: # arbitrary name for the security scheme
+    refresh_token: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    access_token: # arbitrary name for the security scheme
       type: http
       scheme: bearer
       bearerFormat: JWT
