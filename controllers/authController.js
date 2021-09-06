@@ -169,7 +169,6 @@ exports.send_reset_password_email = [
         if (err) {
           return next(err);
         }
-        console.log('Message sent: %s', info.messageId);
         return res.sendStatus(200);
       },
     );
@@ -192,6 +191,12 @@ exports.reset_password = [
     .isLength({ min: 8 })
     .withMessage('Password must be more than 8 character length'),
   (req, res, next) => {
+    if (!errors.isEmpty()) {
+      return res
+        .status(400)
+        .json({ message: 'Password must be more than 8 character length' });
+    }
+
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       // Check if hashing failed
       if (err) {
