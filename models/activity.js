@@ -27,7 +27,7 @@ Activity.virtual('image_url').get(function () {
   if (this.hasImage) {
     return '/' + this._id + '.png';
   } else {
-    return null;
+    return '';
   }
 });
 
