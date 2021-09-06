@@ -17,4 +17,8 @@ router.post(
   auth_controller.send_reset_password_email,
 );
 
+// TODO: redirect GET/reset '/reset-password/:resetToken' to front-end url
+
+router.post('/reset-password/:resetToken', auth_controller.reset_password);
+
 module.exports = router;

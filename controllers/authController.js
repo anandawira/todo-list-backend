@@ -134,7 +134,7 @@ exports.send_reset_password_email = [
   },
   (req, res, next) => {
     const resetToken = jwt.sign(
-      { id: req.user.id, email: req.user.email },
+      { id: req.user.id },
       process.env.FORGET_PASSWORD_SECRET,
       { expiresIn: '1h' },
     );
@@ -159,7 +159,7 @@ exports.send_reset_password_email = [
           Looks like you forgot your password. We cannot simply send you your old
           password. A unique link to reset your password has been generated for you. To
           reset your password, click the following link and follow the instructions.
-          <a href="https://${req.hostname}/reset/${resetToken}">Click here to reset your password</a> This link will expire in 1 hour.
+          <a href="https://${req.hostname}/reset-password/${resetToken}">Click here to reset your password</a> This link will expire in 1 hour.
         </p>
         <p></p>
         <p>ToDoList App - Glints IPE 1</p>
@@ -173,5 +173,40 @@ exports.send_reset_password_email = [
         return res.sendStatus(200);
       },
     );
+  },
+];
+
+exports.reset_password = [
+  (req, res, next) => {
+    jwt.verify(
+      req.params.resetToken,
+      process.env.FORGET_PASSWORD_SECRET,
+      (err, user) => {
+        if (err) return res.status(403).json({ message: err.message });
+        req.user = user;
+        next();
+      },
+    );
+  },
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be more than 8 character length'),
+  (req, res, next) => {
+    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+      // Check if hashing failed
+      if (err) {
+        return res.status(500).send('Password hashing failed');
+      }
+
+      User.changePasswordById(req.user.id, hashedPassword, (err, user) => {
+        if (err) {
+          return next(err);
+        }
+
+        return res
+          .status(200)
+          .json({ message: 'Password updated successfully' });
+      });
+    });
   },
 ];
