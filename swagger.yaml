@@ -72,7 +72,7 @@ paths:
                   message:
                     type: string
   /login:
-    get:
+    post:
       tags:
         - Auth
       summary: Login to the application with email and password
@@ -111,8 +111,8 @@ paths:
                     type: string
         '401': # status code
           description: Unauthorized. Credentials incorrect
-  /access-token:
-    get:
+  /refresh-token:
+    post:
       tags:
         - Auth
       summary: Request new access token
@@ -131,6 +131,96 @@ paths:
                     type: string
         '403':
           description: Generating new token failed. Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /forget-password:
+    post:
+      tags:
+        - Auth
+      summary: Request server to send link to reset password to user's email.
+      description: ''
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+      responses:
+        '200':
+          description: Operation success. Email sent to the user.
+        '404':
+          description: Email not found in the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /reset-password/{resetToken}:
+    post:
+      tags:
+        - Auth
+      summary: Change user's password
+      description: ''
+      parameters:
+        - in: path
+          name: resetToken # Note the name is the same as in the path
+          required: true
+          schema:
+            type: string
+          description: request token from the email
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Password rejected. Must be at least 8 characters long.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Reset token is incorrect
           content:
             application/json:
               schema:

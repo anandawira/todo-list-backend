@@ -21,7 +21,7 @@ module.exports = function (app) {
     new LocalStrategy(
       { usernameField: 'email' },
       (username, password, done) => {
-        User.findOneByEmail(username, (err, user) => {
+        User.findOneByEmail(username.toLowerCase(), (err, user) => {
           if (err) {
             return done(err);
           }

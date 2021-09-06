@@ -20,8 +20,18 @@ UserSchema.statics.findOneByEmail = function (email, callback) {
   });
 };
 
-UserSchema.statics.isEmailTaken = function (email) {
+UserSchema.statics.isEmailExist = function (email) {
   return this.findOne({ email: email });
+};
+
+UserSchema.statics.changePasswordById = function (
+  id,
+  hashedPassword,
+  callback,
+) {
+  this.findByIdAndUpdate(id, { password: hashedPassword }, (err, user) => {
+    callback(err, user);
+  });
 };
 
 module.exports = mongoose.model('User', UserSchema);
