@@ -72,7 +72,7 @@ paths:
                   message:
                     type: string
   /login:
-    get:
+    post:
       tags:
         - Auth
       summary: Login to the application with email and password
@@ -111,8 +111,8 @@ paths:
                     type: string
         '401': # status code
           description: Unauthorized. Credentials incorrect
-  /access-token:
-    get:
+  /refresh-token:
+    post:
       tags:
         - Auth
       summary: Request new access token
