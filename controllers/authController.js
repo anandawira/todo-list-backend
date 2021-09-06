@@ -136,7 +136,7 @@ exports.send_reset_password_email = [
     const resetToken = jwt.sign(
       { id: req.user.id },
       process.env.FORGET_PASSWORD_SECRET,
-      { expiresIn: '1h' },
+      { expiresIn: '15m' },
     );
 
     // create reusable transporter object using the default SMTP transport
@@ -159,7 +159,7 @@ exports.send_reset_password_email = [
           Looks like you forgot your password. We cannot simply send you your old
           password. A unique link to reset your password has been generated for you. To
           reset your password, click the following link and follow the instructions.
-          <a href="https://${req.hostname}/reset-password/${resetToken}">Click here to reset your password</a> This link will expire in 1 hour.
+          <a href="https://${req.hostname}/reset-password/${resetToken}">Click here to reset your password</a> This link will expire in 15 minutes.
         </p>
         <p></p>
         <p>ToDoList App - Glints IPE 1</p>
