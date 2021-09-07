@@ -1,3 +1,8 @@
+// Import environtment variable expect when on production
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const express = require('express');
 var cors = require('cors');
 const authRouter = require('./routes/auth');
@@ -6,11 +11,6 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const morgan = require('morgan');
-
-// Import environtment variable expect when on production
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
 
 // Connect Database
 require('./configs/database');

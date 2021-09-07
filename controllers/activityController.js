@@ -2,6 +2,9 @@ const Activity = require('../models/activity');
 const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
+const Multer = require('multer');
+const path = require('path');
+const multerGoogleStorage = require('multer-google-storage');
 
 exports.activity_create = [
   // Validate title form
@@ -181,4 +184,19 @@ exports.activity_delete = async (req, res, next) => {
     });
   });
 };
-exports.activity_add_photo = (req, res, next) => {};
+
+const uploadHandler = Multer({
+  storage: multerGoogleStorage.storageEngine(),
+});
+
+exports.activity_add_photo = (req, res) => {
+  const upload = uploadHandler.single('image');
+
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ message: err.message });
+    }
+
+    return res.send(req.file.filename);
+  });
+};
