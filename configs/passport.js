@@ -33,7 +33,6 @@ module.exports = function (app) {
             if (err) {
               return done(err);
             }
-            console.log('hahaha');
             if (res) {
               return done(null, user);
             } else {
