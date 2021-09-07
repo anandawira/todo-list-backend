@@ -13,14 +13,12 @@ exports.user_create = [
     .withMessage('First name must be specified')
     .isAlpha()
     .withMessage('First name has non-alphabetical characters'),
-
   body('last_name')
     .trim()
     .isLength({ min: 1 })
     .withMessage('Last name must be specified')
     .isAlpha()
     .withMessage('Last name has non-alphabetical characters'),
-
   body('email')
     .trim()
     .isEmail()
@@ -32,12 +30,12 @@ exports.user_create = [
         return Promise.reject('Email already in use');
       }
     }),
-
   body('password')
     .isLength({ min: 8 })
     .withMessage('Password must be more than 8 character length'),
 
   (req, res, next) => {
+    // Check validation result
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -73,17 +71,20 @@ exports.user_create = [
 exports.user_login = [
   passport.authenticate('local', { session: false }),
   (req, res) => {
+    // Create refresh token
     const refreshToken = jwt.sign(
       { id: req.user.id, isAdmin: req.user.isAdmin },
       process.env.REFRESH_TOKEN_SECRET,
     );
 
+    // Create access token
     const accessToken = jwt.sign(
       { id: req.user.id, isAdmin: req.user.isAdmin },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '1d' },
     );
 
+    // send response
     return res.status(200).json({
       id: req.user.id,
       first_name: req.user.first_name,
@@ -97,13 +98,17 @@ exports.user_login = [
 
 exports.send_reset_password_email = [
   async (req, res, next) => {
+    // Get User by email
     const user = await User.isEmailExist(req.body.email);
-    if (user) {
-      req.user = user;
-      return next();
-    } else {
+
+    // Check if email not found
+    if (!user) {
       return res.status(404).json({ message: 'Email not found' });
     }
+
+    // Put user to request.
+    req.user = user;
+    return next();
   },
   (req, res, next) => {
     const resetToken = jwt.sign(
@@ -139,9 +144,12 @@ exports.send_reset_password_email = [
         `, // html body
       },
       (err, info) => {
+        // Check errors
         if (err) {
           return next(err);
         }
+
+        // Send response
         return res.sendStatus(200);
       },
     );
@@ -150,37 +158,49 @@ exports.send_reset_password_email = [
 
 exports.reset_password = [
   (req, res, next) => {
+    // Check reset token
     jwt.verify(
       req.params.resetToken,
       process.env.FORGET_PASSWORD_SECRET,
       (err, user) => {
-        if (err) return res.status(403).json({ message: err.message });
+        // Check errors
+        if (err) {
+          return res.status(403).json({ message: err.message });
+        }
+        // Add user to request object
         req.user = user;
         next();
       },
     );
   },
+  // Validate password form
   body('password')
     .isLength({ min: 8 })
     .withMessage('Password must be more than 8 character length'),
   (req, res, next) => {
+    // Check validation result
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
         .status(400)
         .json({ message: 'Password must be more than 8 character length' });
     }
 
+    // Convert plain password to hash
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       // Check if hashing failed
       if (err) {
         return res.status(500).send('Password hashing failed');
       }
 
+      // Change password on database
       User.changePasswordById(req.user.id, hashedPassword, (err, user) => {
+        // Check errors
         if (err) {
           return next(err);
         }
 
+        // send response
         return res
           .status(200)
           .json({ message: 'Password updated successfully' });
