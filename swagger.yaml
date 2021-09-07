@@ -107,6 +107,8 @@ paths:
                     type: string
                   last_name:
                     type: string
+                  isAdmin:
+                    type: boolean
                   refresh_token:
                     type: string
                   access_token:

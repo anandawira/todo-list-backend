@@ -88,6 +88,7 @@ exports.user_login = [
       id: req.user.id,
       first_name: req.user.first_name,
       last_name: req.user.last_name,
+      isAdmin: req.user.isAdmin,
       refresh_token: refreshToken,
       access_token: accessToken,
     });
