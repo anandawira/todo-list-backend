@@ -7,6 +7,7 @@ const express = require('express');
 var cors = require('cors');
 const authRouter = require('./routes/auth');
 const activityRouter = require('./routes/activity');
+const usersRouter = require('./routes/users');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
@@ -29,6 +30,7 @@ require('./configs/passport')(app);
 // Routers
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/activity', activityRouter);
+app.use('/users', usersRouter);
 app.use('/', authRouter);
 
 // error handler

@@ -1,25 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema(
-  {
-    first_name: { type: String, required: true, maxlength: 50 },
-    last_name: { type: String, required: true, maxlength: 50 },
-    email: {
-      type: String,
-      required: true,
-      maxlength: 100,
-      unique: true,
-    },
-    password: { type: String, required: true },
-    isAdmin: { type: Boolean, default: false },
-    activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
+const UserSchema = new Schema({
+  first_name: { type: String, required: true, maxlength: 50 },
+  last_name: { type: String, required: true, maxlength: 50 },
+  email: {
+    type: String,
+    required: true,
+    maxlength: 100,
+    unique: true,
   },
-  {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
-  },
-);
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false },
+  activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
+});
 
 UserSchema.statics.findOneByEmail = function (email, callback) {
   return this.findOne({ email: email }, (err, user) => {

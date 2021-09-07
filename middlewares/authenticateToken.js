@@ -26,7 +26,7 @@ module.exports = function (req, res, next) {
           const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: '1d',
           });
-
+          
           res.append('new_access_token', accessToken);
           req.user = user;
           return next();
