@@ -95,31 +95,6 @@ exports.user_login = [
   },
 ];
 
-exports.user_refresh_token = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const refreshToken = authHeader && authHeader.split(' ')[1];
-
-  if (refreshToken === undefined) return res.sendStatus(401);
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: err.message });
-    User.findById(
-      user.id,
-      'id first_name last_name email isAdmin',
-      (err, userData) => {
-        if (err) {
-          return next();
-        }
-        const accessToken = jwt.sign(
-          { id: userData.id, isAdmin: userData.isAdmin },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '1d' },
-        );
-        res.status(200).json({ access_token: accessToken });
-      },
-    );
-  });
-};
-
 exports.send_reset_password_email = [
   async (req, res, next) => {
     const user = await User.isEmailExist(req.body.email);
