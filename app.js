@@ -12,17 +12,19 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const morgan = require('morgan');
+const compression = require('compression');
 
 // Connect Database
 require('./configs/database');
 
 // Initialize Express Server with CORS
 const app = express();
+
+// Standard middlewares
 app.use(morgan('dev'));
 app.use(cors());
-
-// Parse urlencoded request body
 app.use(express.urlencoded({ extended: false }));
+app.use(compression());
 
 // auth
 require('./configs/passport')(app);
