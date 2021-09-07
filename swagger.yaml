@@ -78,7 +78,7 @@ paths:
       tags:
         - Auth
       summary: Login to the application with email and password
-      description: ''
+      description: 'Dummy account -> user@thisapp.com | passwordUser'
       requestBody:
         required: true
         content:
@@ -115,33 +115,6 @@ paths:
                     type: string
         '401': # status code
           description: Unauthorized. Credentials incorrect
-  /refresh-token:
-    post:
-      tags:
-        - Auth
-      summary: Request new access token
-      description: ''
-      security:
-        - refresh_token: []
-      responses:
-        '200':
-          description: New access token generated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access-token:
-                    type: string
-        '403':
-          description: Generating new token failed. Invalid token
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
   /forget-password:
     post:
       tags:
@@ -249,9 +222,20 @@ paths:
       description: ''
       security:
         - access_token: []
+      parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
+          required: true
       responses:
         '200':
           description: Operation success
+          headers:
+            new_access_token:
+              schema:
+                type: string
+              description: Only available after refreshing token. Use this token for next api calls.
           content:
             application/json:
               schema:
@@ -296,6 +280,12 @@ paths:
       description: ''
       security:
         - access_token: []
+      parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
+          required: true
       requestBody:
         required: true
         content:
@@ -313,9 +303,19 @@ paths:
       responses:
         '201':
           description: Activity saved to the database
+          headers:
+            new_access_token:
+              schema:
+                type: string
+              description: Only available after refreshing token. Use this token for next api calls.
           
         '400':
           description: Bad Request. One of form data did NOT meet the requirement.
+          headers:
+            new_access_token:
+              schema:
+                type: string
+              description: Only available after refreshing token. Use this token for next api calls.
           content:
             application/json:
               schema:
@@ -358,10 +358,6 @@ paths:
 
 components:
   securitySchemes:
-    refresh_token: # arbitrary name for the security scheme
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
     access_token: # arbitrary name for the security scheme
       type: http
       scheme: bearer
