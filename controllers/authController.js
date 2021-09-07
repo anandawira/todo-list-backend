@@ -74,7 +74,7 @@ exports.user_login = [
   passport.authenticate('local', { session: false }),
   (req, res) => {
     const refreshToken = jwt.sign(
-      { id: req.user.id },
+      { id: req.user.id, isAdmin: req.user.isAdmin },
       process.env.REFRESH_TOKEN_SECRET,
     );
 
@@ -109,7 +109,7 @@ exports.user_refresh_token = (req, res, next) => {
           return next();
         }
         const accessToken = jwt.sign(
-          { id: userData.id, email: userData.email, isAdmin: userData.isAdmin },
+          { id: userData.id, isAdmin: userData.isAdmin },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: '1d' },
         );
