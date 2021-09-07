@@ -197,6 +197,9 @@ exports.activity_add_photo = (req, res) => {
       return res.status(400).json({ message: err.message });
     }
 
-    return res.send(req.file.filename);
+    return res.status(200).json({
+      image_url:
+        'https://storage.googleapis.com/glints-ipe1/' + req.file.filename,
+    });
   });
 };
