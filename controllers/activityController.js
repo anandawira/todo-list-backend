@@ -48,12 +48,16 @@ exports.activity_create = [
     });
   },
 ];
-exports.activity_list = async (req, res, next) => {
+exports.activity_list = (req, res, next) => {
   User.findById(req.user.id, 'activities')
     .populate('activities', 'title description hasImage isDone')
     .exec((err, result) => {
       if (err) {
         return next(err);
+      }
+
+      if (!result) {
+        return res.status(404).json({ message: 'User not found' });
       }
 
       return res.json(result.activities);
@@ -119,7 +123,39 @@ exports.activity_edit = [
     });
   },
 ];
-exports.activity_delete = (req, res, next) => {
-  res.send('DELETE');
+exports.activity_delete = async (req, res, next) => {
+  // Check if activity id valid
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid object Id' });
+  }
+
+  // Check if this activity's owner is current user
+  Activity.findById(req.params.id, (err, activity) => {
+    // Check errors
+    if (err) {
+      return next(err);
+    }
+
+    // Check if activity exist
+    if (!activity) {
+      return res.status(404).json({ message: 'Activity not found' });
+    }
+
+    // Check if this activity's owner is current user
+    if (req.user.id !== activity.author.toString()) {
+      return res
+        .status(403)
+        .json({ message: "User don't have access to this activity" });
+    }
+
+    // Delete activity document
+    Activity.findByIdAndDelete(activity.id, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      return res.status(200).json({ message: 'Activity deleted successfully' });
+    });
+  });
 };
 exports.activity_add_photo = (req, res, next) => {};

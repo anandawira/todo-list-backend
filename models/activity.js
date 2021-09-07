@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const User = require('./user');
 
 const Activity = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -30,6 +31,20 @@ Activity.virtual('image_url').get(function () {
   } else {
     return '';
   }
+});
+
+Activity.post('findOneAndDelete', function (docs) {
+  User.findById(docs.author, (err, user) => {
+    if (err) {
+      console.log(err);
+    }
+    user.activities.pull(docs._id);
+    user.save((err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  });
 });
 
 module.exports = mongoose.model('Activity', Activity);
