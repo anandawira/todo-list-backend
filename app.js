@@ -1,11 +1,11 @@
 const express = require('express');
 var cors = require('cors');
 const authRouter = require('./routes/auth');
+const activityRouter = require('./routes/activity');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 const morgan = require('morgan');
-
 
 // Import environtment variable expect when on production
 if (process.env.NODE_ENV !== 'production') {
@@ -28,6 +28,7 @@ require('./configs/passport')(app);
 
 // Routers
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/activity', activityRouter);
 app.use('/', authRouter);
 
 // error handler

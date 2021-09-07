@@ -3,7 +3,6 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const authenticateToken = require('../middlewares/authenticateToken');
 const nodemailer = require('nodemailer');
 
 exports.user_create = [
@@ -11,7 +10,6 @@ exports.user_create = [
   body('first_name')
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage('First name must be specified')
     .isAlpha()
     .withMessage('First name has non-alphabetical characters'),
@@ -19,7 +17,6 @@ exports.user_create = [
   body('last_name')
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage('Last name must be specified')
     .isAlpha()
     .withMessage('Last name has non-alphabetical characters'),
@@ -77,7 +74,7 @@ exports.user_login = [
   passport.authenticate('local', { session: false }),
   (req, res) => {
     const refreshToken = jwt.sign(
-      { id: req.user.id },
+      { id: req.user.id, isAdmin: req.user.isAdmin },
       process.env.REFRESH_TOKEN_SECRET,
     );
 
@@ -91,36 +88,12 @@ exports.user_login = [
       id: req.user.id,
       first_name: req.user.first_name,
       last_name: req.user.last_name,
+      isAdmin: req.user.isAdmin,
       refresh_token: refreshToken,
       access_token: accessToken,
     });
   },
 ];
-
-exports.user_refresh_token = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const refreshToken = authHeader && authHeader.split(' ')[1];
-
-  if (refreshToken === undefined) return res.sendStatus(401);
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: err.message });
-    User.findById(
-      user.id,
-      'id first_name last_name email isAdmin',
-      (err, userData) => {
-        if (err) {
-          return next();
-        }
-        const accessToken = jwt.sign(
-          { id: userData.id, email: userData.email, isAdmin: userData.isAdmin },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '1d' },
-        );
-        res.status(200).json({ access_token: accessToken });
-      },
-    );
-  });
-};
 
 exports.send_reset_password_email = [
   async (req, res, next) => {
