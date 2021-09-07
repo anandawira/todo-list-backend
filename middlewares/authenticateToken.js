@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
       }
 
       if (req.get('refresh_token') === undefined) {
-        return res.status(400).json({
+        return res.status(403).json({
           message:
             'Access token expired. refresh_token not specified, CANNOT auto refresh new token.',
         });
