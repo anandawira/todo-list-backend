@@ -217,7 +217,7 @@ paths:
   /activity:
     get:
       tags:
-      - Activity
+        - Activity
       summary: Get all activity of current user
       description: ''
       security:
@@ -275,7 +275,7 @@ paths:
                     type: string
     post:
       tags:
-      - Activity
+        - Activity
       summary: Save new activity to the database
       description: ''
       security:
@@ -308,7 +308,7 @@ paths:
               schema:
                 type: string
               description: Only available after refreshing token. Use this token for next api calls.
-          
+
         '400':
           description: Bad Request. One of form data did NOT meet the requirement.
           headers:
@@ -343,7 +343,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    
+
         '500':
           description: Internal server error
           content:
@@ -356,12 +356,17 @@ paths:
   /activity/{id}:
     put:
       tags:
-      - Activity
+        - Activity
       summary: Edit activity detail
       description: ''
       security:
         - access_token: []
       parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
+          required: true
         - in: path
           name: id # Note the name is the same as in the path
           required: true
@@ -447,12 +452,17 @@ paths:
                     type: string
     delete:
       tags:
-      - Activity
+        - Activity
       summary: Delete an activity from the database
       description: ''
       security:
         - access_token: []
       parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
+          required: true
         - in: path
           name: id # Note the name is the same as in the path
           required: true
@@ -494,7 +504,7 @@ paths:
                 properties:
                   message:
                     type: string
-      
+
 components:
   securitySchemes:
     access_token: # arbitrary name for the security scheme
