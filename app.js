@@ -21,7 +21,7 @@ require('./configs/database');
 const app = express();
 
 // Standard middlewares
-app.use(morgan('tiny'));
+app.use(morgan('combined'));
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
