@@ -7,7 +7,7 @@ const Activity = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   hasImage: { type: Boolean, required: true, default: false },
-  image_url: { type: String, required: true, default: '' },
+  image_url: { type: String, default: '' },
   isDone: { type: Boolean, required: true, default: false },
 });
 

@@ -17,6 +17,7 @@ exports.activity_create = [
   body('description')
     .exists()
     .withMessage("'description' not found in form data"),
+  body('image_url').isURL().optional(),
   (req, res, next) => {
     // Check validation result
     const errors = validationResult(req);
@@ -30,7 +31,11 @@ exports.activity_create = [
       author: req.user.id,
       title: req.body.title,
       description: req.body.description,
+      hasImage: req.body.image_url === undefined ? false : true,
+      image_url: req.body.image_url === undefined ? '' : req.body.image_url,
     });
+
+    console.log(activity);
 
     // Save activity
     activity.save((err) => {
@@ -194,7 +199,7 @@ exports.activity_add_photo = (req, res) => {
 
   upload(req, res, (err) => {
     if (err) {
-      return res.status(400).json({ message: err.message });
+      return res.status(500).json({ message: err.message });
     }
 
     return res.status(200).json({
