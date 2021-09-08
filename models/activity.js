@@ -7,11 +7,11 @@ const Activity = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   hasImage: { type: Boolean, required: true, default: false },
+  image_url: { type: String, required: true, default: '' },
   isDone: { type: Boolean, required: true, default: false },
 });
 
 Activity.set('toJSON', {
-  virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
     return {
@@ -23,14 +23,6 @@ Activity.set('toJSON', {
       isDone: ret.isDone,
     };
   },
-});
-
-Activity.virtual('image_url').get(function () {
-  if (this.hasImage) {
-    return '/' + this._id + '.png';
-  } else {
-    return '';
-  }
 });
 
 Activity.post('findOneAndDelete', function (docs) {

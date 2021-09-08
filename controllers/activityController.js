@@ -63,7 +63,7 @@ exports.activity_create = [
 exports.activity_list = (req, res, next) => {
   // Get activities from database
   User.findById(req.user.id, 'activities')
-    .populate('activities', 'title description hasImage isDone')
+    .populate('activities', 'title description hasImage image_url isDone')
     .exec((err, result) => {
       // Check errors
       if (err) {
