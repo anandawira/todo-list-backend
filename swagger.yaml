@@ -14,6 +14,8 @@ tags:
     description: User authentication and authorization
   - name: Activity
     description: Operations on activity object
+  - name: Admin
+    description: Operations for admin only
 paths:
   /sign-up:
     post:
@@ -258,8 +260,17 @@ paths:
                       type: string
                     isDone:
                       type: boolean
-        '403':
+        '401':
           description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid
           content:
             application/json:
               schema:
@@ -339,8 +350,17 @@ paths:
                           type: string
                         location:
                           type: string
-        '403':
+        '401':
           description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid
           content:
             application/json:
               schema:
@@ -430,8 +450,17 @@ paths:
                           type: string
                         location:
                           type: string
-        '403':
+        '401':
           description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid
           content:
             application/json:
               schema:
@@ -492,8 +521,17 @@ paths:
                 properties:
                   message:
                     type: string
-        '403':
+        '401':
           description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid
           content:
             application/json:
               schema:
@@ -527,6 +565,11 @@ paths:
       description: ''
       security:
         - access_token: []
+      parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
       requestBody:
         content: 
           multipart/form-data: # Media type
@@ -555,8 +598,17 @@ paths:
                 properties:
                   message:
                     type: string
-        '403':
+        '401':
           description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid.
           content:
             application/json:
               schema:
@@ -573,7 +625,57 @@ paths:
                 properties:
                   message:
                     type: string
-        
+  /users:
+    get:
+      tags:
+      - Admin
+      summary: Get all activity of current user
+      description: ''
+      security:
+        - access_token: []
+      parameters:
+        - in: header
+          name: refresh_token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retrieve list of users success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  image_url:
+                    type: string
+        '401':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '403':
+          description: Forbidden error. Access token invalid or user don't have admin role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
       
 components:
   securitySchemes:
