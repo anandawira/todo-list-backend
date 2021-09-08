@@ -546,6 +546,15 @@ paths:
                 properties:
                   image_url:
                     type: string
+        '400':
+          description: image field undefined
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         '403':
           description: Authentication error
           content:

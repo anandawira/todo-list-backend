@@ -209,6 +209,10 @@ exports.activity_add_photo = (req, res) => {
       return res.status(500).json({ message: err.message });
     }
 
+    if (req.file === undefined) {
+      return res.status(400).json({ message: 'image field undefined' });
+    }
+
     return res.status(200).json({
       image_url:
         'https://storage.googleapis.com/glints-ipe1/' + req.file.filename,
