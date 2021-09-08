@@ -104,6 +104,7 @@ exports.activity_edit = [
     .isBoolean()
     .withMessage('Value must be boolean')
     .toBoolean(),
+  body('image_url').isURL().optional(),
   (req, res, next) => {
     // Check if validations passed
     const errors = validationResult(req);
@@ -138,6 +139,12 @@ exports.activity_edit = [
       activity.title = req.body.title;
       activity.description = req.body.description;
       activity.isDone = req.body.isDone;
+      activity.hasImage =
+        req.body.image_url === undefined ? activity.hasImage : true;
+      activity.image_url =
+        req.body.image_url === undefined
+          ? activity.image_url
+          : req.body.image_url;
 
       // Save activity to the database
       activity.save((err) => {
