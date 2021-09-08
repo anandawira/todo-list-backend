@@ -34,8 +34,10 @@ paths:
                   type: string
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
               required:
                 - first_name
                 - last_name
@@ -88,8 +90,10 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
+                  format: password
               required:
                 - email
                 - password
@@ -217,7 +221,7 @@ paths:
   /activity:
     get:
       tags:
-        - Activity
+      - Activity
       summary: Get all activity of current user
       description: ''
       security:
@@ -227,7 +231,6 @@ paths:
           name: refresh_token
           schema:
             type: string
-          required: true
       responses:
         '200':
           description: Operation success
@@ -275,7 +278,7 @@ paths:
                     type: string
     post:
       tags:
-        - Activity
+      - Activity
       summary: Save new activity to the database
       description: ''
       security:
@@ -285,7 +288,6 @@ paths:
           name: refresh_token
           schema:
             type: string
-          required: true
       requestBody:
         required: true
         content:
@@ -297,6 +299,9 @@ paths:
                   type: string
                 description:
                   type: string
+                image_url:
+                  type: string
+                  format: url
               required:
                 - title
                 - description
@@ -308,7 +313,7 @@ paths:
               schema:
                 type: string
               description: Only available after refreshing token. Use this token for next api calls.
-
+          
         '400':
           description: Bad Request. One of form data did NOT meet the requirement.
           headers:
@@ -343,7 +348,7 @@ paths:
                 properties:
                   message:
                     type: string
-
+                    
         '500':
           description: Internal server error
           content:
@@ -356,7 +361,7 @@ paths:
   /activity/{id}:
     put:
       tags:
-        - Activity
+      - Activity
       summary: Edit activity detail
       description: ''
       security:
@@ -366,7 +371,6 @@ paths:
           name: refresh_token
           schema:
             type: string
-          required: true
         - in: path
           name: id # Note the name is the same as in the path
           required: true
@@ -386,6 +390,9 @@ paths:
                   type: string
                 isDone:
                   type: boolean
+                image_url:
+                  type: string
+                  format: url
               required:
                 - title
                 - description
@@ -452,7 +459,7 @@ paths:
                     type: string
     delete:
       tags:
-        - Activity
+      - Activity
       summary: Delete an activity from the database
       description: ''
       security:
@@ -462,7 +469,6 @@ paths:
           name: refresh_token
           schema:
             type: string
-          required: true
         - in: path
           name: id # Note the name is the same as in the path
           required: true
@@ -504,7 +510,62 @@ paths:
                 properties:
                   message:
                     type: string
-
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /activity/image:
+    post:
+      tags:
+      - Activity
+      summary: Upload an image to the server and get the url
+      description: ''
+      security:
+        - access_token: []
+      requestBody:
+        content: 
+          multipart/form-data: # Media type
+            schema:            # Request payload
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  image_url:
+                    type: string
+        '403':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        
+      
 components:
   securitySchemes:
     access_token: # arbitrary name for the security scheme
