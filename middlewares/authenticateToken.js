@@ -6,7 +6,10 @@ module.exports = function (req, res, next) {
   const accessToken = authHeader && authHeader.split(' ')[1];
 
   // If access token not found return 401
-  if (accessToken === undefined) return res.sendStatus(401);
+  if (accessToken === undefined)
+    return res
+      .status(401)
+      .json({ message: 'Access token not found in the request header' });
 
   // Verify access token
   jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
