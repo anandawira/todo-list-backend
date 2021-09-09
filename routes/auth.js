@@ -4,6 +4,8 @@ const rateLimit = require('express-rate-limit');
 
 const auth_controller = require('../controllers/authController');
 
+router.get('/', (req, res) => res.redirect('/api-docs'));
+
 router.post('/sign-up', auth_controller.user_create);
 
 router.post('/login', auth_controller.user_login);

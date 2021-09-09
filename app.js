@@ -1,27 +1,30 @@
-const express = require('express');
-var cors = require('cors');
-const authRouter = require('./routes/auth');
-const activityRouter = require('./routes/activity');
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./swagger.yaml');
-const morgan = require('morgan');
-
 // Import environtment variable expect when on production
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+const express = require('express');
+var cors = require('cors');
+const authRouter = require('./routes/auth');
+const activityRouter = require('./routes/activity');
+const usersRouter = require('./routes/users');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+const morgan = require('morgan');
+const compression = require('compression');
 
 // Connect Database
 require('./configs/database');
 
 // Initialize Express Server with CORS
 const app = express();
-app.use(morgan('dev'));
-app.use(cors());
 
-// Parse urlencoded request body
+// Standard middlewares
+app.use(morgan('tiny'));
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
+app.use(compression());
 
 // auth
 require('./configs/passport')(app);
@@ -29,6 +32,7 @@ require('./configs/passport')(app);
 // Routers
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/activity', activityRouter);
+app.use('/users', usersRouter);
 app.use('/', authRouter);
 
 // error handler

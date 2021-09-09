@@ -8,7 +8,12 @@ router.use(authenticateToken);
 router
   .route('/')
   .get(activityController.activity_list)
-  .post(activityController.activity_create)
+  .post(activityController.activity_create);
+
+router.route('/image').post(activityController.activity_add_photo);
+
+router
+  .route('/:id')
   .put(activityController.activity_edit)
   .delete(activityController.activity_delete);
 
