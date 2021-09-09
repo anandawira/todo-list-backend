@@ -35,8 +35,6 @@ exports.activity_create = [
       image_url: req.body.image_url === undefined ? '' : req.body.image_url,
     });
 
-    console.log(activity);
-
     // Save activity
     activity.save((err) => {
       if (err) {
