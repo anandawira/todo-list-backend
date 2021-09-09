@@ -137,7 +137,7 @@ exports.send_reset_password_email = [
           Looks like you forgot your password. We cannot simply send you your old
           password. A unique link to reset your password has been generated for you. To
           reset your password, click the following link and follow the instructions.
-          <a href="https://${req.hostname}/reset-password/${resetToken}">Click here to reset your password</a> This link will expire in 15 minutes.
+          <a href="https://multiform-tears.000webhostapp.com/recover?token=${resetToken}">Click here to reset your password</a> This link will expire in 15 minutes.
         </p>
         <p></p>
         <p>ToDoList App - Glints IPE 1</p>
